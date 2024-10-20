@@ -1,7 +1,7 @@
-
+using grupoABack.BusinessRules.StudentRules;
 using grupoABack.Data;
+using grupoABack.Repository;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace grupoABack
 {
@@ -11,18 +11,27 @@ namespace grupoABack
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
+            // Adicione serviços ao contêiner
             builder.Services.AddControllers();
             builder.Services.AddDbContext<StudentContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+            builder.Services.AddScoped<IStudentBusiness, StudentBusiness>();
+
+            // Configurar CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
+
+            // Configurar Swagger/OpenAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Configurar o pipeline de requisições HTTP
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -31,8 +40,10 @@ namespace grupoABack
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            // Usar CORS
+            app.UseCors("AllowAllOrigins");
 
+            app.UseAuthorization();
 
             app.MapControllers();
 

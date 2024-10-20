@@ -1,7 +1,7 @@
-using grupoABack.Data;
+using grupoABack.BusinessRules.StudentRules;
+using grupoABack.DTOs.StudentDTO;
 using grupoABack.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace grupoABack.Controllers
 {
@@ -9,25 +9,50 @@ namespace grupoABack.Controllers
     [Route("[controller]")]
     public class StudentController : ControllerBase
     {
-        private readonly StudentContext _context;
+        private readonly IStudentBusiness _studentBusiness;
 
-        public StudentController(StudentContext context)
+        public StudentController(IStudentBusiness studentBusiness)
         {
-            _context = context;
+            _studentBusiness = studentBusiness;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
-            return await _context.Students.ToListAsync();
+            return Ok(await _studentBusiness.GetStudentsAsync());
         }
 
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(Student student)
+        public async Task<ActionResult> CreateStudent(CreateStudentDTO createStudentDTO)
         {
-            _context.Students.Add(student);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetStudents), new { id = student.Id }, student);
+            var result = await _studentBusiness.CreateStudentAsync(createStudentDTO);
+            if (!result)
+            {
+                return NotFound();
+            }
+            return Ok();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateStudent(UpdateStudentDTO updateStudentDTO)
+        {
+            var result = await _studentBusiness.UpdateStudentAsync(updateStudentDTO);
+            if (!result)
+            {
+                return NotFound();
+            }
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteStudent(Guid id)
+        {
+            var result = await _studentBusiness.DeleteStudentAsync(id);
+            if (!result)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
     }
 }
