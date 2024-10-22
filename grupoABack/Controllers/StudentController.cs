@@ -22,6 +22,12 @@ namespace grupoABack.Controllers
             return Ok(await _studentBusiness.GetStudentsAsync());
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Student>> GetStudentById(Guid id)
+        {
+            return Ok(await _studentBusiness.GetStudentByIdAsync(id));
+        }
+
         [HttpPost]
         public async Task<ActionResult> CreateStudent(CreateStudentDTO createStudentDTO)
         {
@@ -33,7 +39,7 @@ namespace grupoABack.Controllers
             return Ok();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<ActionResult> UpdateStudent(UpdateStudentDTO updateStudentDTO)
         {
             var result = await _studentBusiness.UpdateStudentAsync(updateStudentDTO);

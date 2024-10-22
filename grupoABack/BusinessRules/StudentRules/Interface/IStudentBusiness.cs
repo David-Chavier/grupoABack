@@ -6,6 +6,7 @@ namespace grupoABack.BusinessRules.StudentRules
     public interface IStudentBusiness
     {
         Task<IEnumerable<Student>> GetStudentsAsync();
+        Task<Student> GetStudentByIdAsync(Guid id);
         Task<bool> CreateStudentAsync(CreateStudentDTO createStudentDTO);
         Task<bool> UpdateStudentAsync(UpdateStudentDTO updateStudentDTO);
         Task<bool> DeleteStudentAsync(Guid id);

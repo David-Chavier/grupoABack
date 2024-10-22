@@ -20,9 +20,13 @@ namespace grupoABack.BusinessRules.StudentRules
             return await _studentRepository.GetAllAsync();
         }
 
+        public async Task<Student> GetStudentByIdAsync(Guid id)
+        {
+            return await _studentRepository.GetByIdAsync(id);
+        }
+
         public async Task<bool> CreateStudentAsync(CreateStudentDTO createStudentDTO)
         {
-
             var student = new Student
             {
                 Name = createStudentDTO.Name,
@@ -51,7 +55,8 @@ namespace grupoABack.BusinessRules.StudentRules
 
             existingStudent.Name = updateStudentDTO.Name;
             existingStudent.CPF = updateStudentDTO.CPF;
-            existingStudent.AcademicRegistration = updateStudentDTO.AcademicRegistration;
+
+            await _studentRepository.UpdateAsync(existingStudent);
 
             return true;
         }
