@@ -19,44 +19,58 @@ namespace grupoABack.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
-            return Ok(await _studentBusiness.GetStudentsAsync());
+            var result = await _studentBusiness.GetStudentsAsync();
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result.Data);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Student>> GetStudentById(Guid id)
+        [HttpGet("{academicRegistration}")]
+        public async Task<ActionResult<Student>> GetStudentById(string academicRegistration)
         {
-            return Ok(await _studentBusiness.GetStudentByIdAsync(id));
+            var result = await _studentBusiness.GetStudentByIdAsync(academicRegistration);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result.Data);
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateStudent(CreateStudentDTO createStudentDTO)
+        public async Task<ActionResult> CreateStudent(StudentDTO studentDTO)
         {
-            var result = await _studentBusiness.CreateStudentAsync(createStudentDTO);
-            if (!result)
+            var result = await _studentBusiness.CreateStudentAsync(studentDTO);
+
+            if (!result.Success)
             {
-                return NotFound();
+                return BadRequest(result);
             }
+
             return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateStudent(UpdateStudentDTO updateStudentDTO)
+        public async Task<ActionResult> UpdateStudent(StudentDTO studentDTO)
         {
-            var result = await _studentBusiness.UpdateStudentAsync(updateStudentDTO);
-            if (!result)
+            var result = await _studentBusiness.UpdateStudentAsync(studentDTO);
+            if (!result.Success)
             {
-                return NotFound();
+                return NotFound(result.Message);
             }
             return Ok();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteStudent(Guid id)
+        [HttpDelete("{academicRegistration}")]
+        public async Task<ActionResult> DeleteStudent(string academicRegistration)
         {
-            var result = await _studentBusiness.DeleteStudentAsync(id);
-            if (!result)
+            var result = await _studentBusiness.DeleteStudentAsync(academicRegistration);
+            if (!result.Success)
             {
-                return NotFound();
+                return NotFound(result.Message);
             }
             return NoContent();
         }

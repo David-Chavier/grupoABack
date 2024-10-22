@@ -15,55 +15,68 @@ namespace grupoABack.BusinessRules.StudentRules
             _studentRepository = studentRepository;
         }
 
-        public async Task<IEnumerable<Student>> GetStudentsAsync()
+        public async Task<Result> GetStudentsAsync()
         {
-            return await _studentRepository.GetAllAsync();
+            var result = await _studentRepository.GetAllAsync();
+
+            return new Result(true, "", result);
         }
 
-        public async Task<Student> GetStudentByIdAsync(Guid id)
+        public async Task<Result> GetStudentByIdAsync(string academicRegistration)
         {
-            return await _studentRepository.GetByIdAsync(id);
+            var result = await _studentRepository.GetByRAAsync(academicRegistration);
+
+            return new Result(true, "", result);
         }
 
-        public async Task<bool> CreateStudentAsync(CreateStudentDTO createStudentDTO)
+        public async Task<Result> CreateStudentAsync(StudentDTO studentDTO)
         {
-            var student = new Student
+            var student = await _studentRepository.GetByRAAsync(studentDTO.AcademicRegistration);
+
+            if (student != null)
             {
-                Name = createStudentDTO.Name,
-                CPF = createStudentDTO.CPF,
-                AcademicRegistration = createStudentDTO.AcademicRegistration,
-                Email = createStudentDTO.Email
+                return new Result (false, "Já tem um cadastro com esse registro acadêmico" );
+            }
+
+            var newStudent = new Student
+            {
+                Name = studentDTO.Name,
+                CPF = studentDTO.CPF,
+                AcademicRegistration = studentDTO.AcademicRegistration,
+                Email = studentDTO.Email
             };
 
-            var resultStudent = await _studentRepository.AddAsync(student);
+            var resultStudent = await _studentRepository.AddAsync(newStudent);
 
             if (resultStudent == null)
             {
-                return false;
+                return new Result (false, "Falha ao criar estudante");
             }
 
-            return true;
+            return new Result (true);
         }
 
-        public async Task<bool> UpdateStudentAsync(UpdateStudentDTO updateStudentDTO)
+        public async Task<Result> UpdateStudentAsync(StudentDTO studentDTO)
         {
-            var existingStudent = await _studentRepository.GetByIdAsync(updateStudentDTO.Id);
+            var existingStudent = await _studentRepository.GetByRAAsync(studentDTO.AcademicRegistration);
             if (existingStudent == null)
             {
-                return false;
+                return new Result(false, "Registro acadêmico não encontrado");
             }
 
-            existingStudent.Name = updateStudentDTO.Name;
-            existingStudent.CPF = updateStudentDTO.CPF;
+            existingStudent.Name = studentDTO.Name;
+            existingStudent.Email = studentDTO.Email;
 
             await _studentRepository.UpdateAsync(existingStudent);
 
-            return true;
+            return new Result(true);
         }
 
-        public async Task<bool> DeleteStudentAsync(Guid id)
+        public async Task<Result> DeleteStudentAsync(string academicRegistration)
         {
-            return await _studentRepository.DeleteAsync(id);
+            var result = await _studentRepository.DeleteAsync(academicRegistration);
+
+            return new Result(result);
         }
     }
 }

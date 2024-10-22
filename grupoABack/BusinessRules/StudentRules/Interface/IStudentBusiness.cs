@@ -5,10 +5,10 @@ namespace grupoABack.BusinessRules.StudentRules
 {
     public interface IStudentBusiness
     {
-        Task<IEnumerable<Student>> GetStudentsAsync();
-        Task<Student> GetStudentByIdAsync(Guid id);
-        Task<bool> CreateStudentAsync(CreateStudentDTO createStudentDTO);
-        Task<bool> UpdateStudentAsync(UpdateStudentDTO updateStudentDTO);
-        Task<bool> DeleteStudentAsync(Guid id);
+        Task<Result> GetStudentsAsync();
+        Task<Result> GetStudentByIdAsync(string academicRegistration);
+        Task<Result> CreateStudentAsync(StudentDTO studentDTO);
+        Task<Result> UpdateStudentAsync(StudentDTO studentDTO);
+        Task<Result> DeleteStudentAsync(string academicRegistration);
     }
 }

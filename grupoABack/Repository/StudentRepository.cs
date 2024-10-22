@@ -15,12 +15,19 @@ namespace grupoABack.Repository
 
         public async Task<IEnumerable<Student>> GetAllAsync()
         {
-            return await _context.Students.ToListAsync();
+            try
+            {
+                return await _context.Students.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("", ex);
+            }
         }
 
-        public async Task<Student> GetByIdAsync(Guid id)
+        public async Task<Student> GetByRAAsync(string academicRegistration)
         {
-            return await _context.Students.FindAsync(id);
+            return await _context.Students.FindAsync(academicRegistration);
         }
 
         public async Task<Student> AddAsync(Student student)
@@ -37,12 +44,12 @@ namespace grupoABack.Repository
             return student;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(string academicRegistration)
         {
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students.FindAsync(academicRegistration);
             if (student == null)
             {
-                return false; // Ou lance uma exceção se preferir
+                return false;
             }
 
             _context.Students.Remove(student);

@@ -6,9 +6,9 @@ namespace grupoABack.Repository
     public interface IStudentRepository
     {
         Task<IEnumerable<Student>> GetAllAsync();
-        Task<Student> GetByIdAsync(Guid id);
+        Task<Student> GetByRAAsync(string academicRegistration);
         Task<Student> AddAsync(Student student);
         Task<Student> UpdateAsync(Student student);
-        Task<bool> DeleteAsync(Guid id);
+        Task<bool> DeleteAsync(string academicRegistration);
     }
 }
