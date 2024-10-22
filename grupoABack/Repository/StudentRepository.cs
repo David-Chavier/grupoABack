@@ -21,40 +21,68 @@ namespace grupoABack.Repository
             }
             catch (Exception ex)
             {
-                throw new Exception("", ex);
+                throw new Exception("Erro ao buscar todos os estudantes", ex);
             }
         }
 
         public async Task<Student> GetByRAAsync(string academicRegistration)
         {
-            return await _context.Students.FindAsync(academicRegistration);
+            try
+            {
+                return await _context.Students.FindAsync(academicRegistration);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao buscar estudante pelo registro acadêmico", ex);
+            }
         }
 
         public async Task<Student> AddAsync(Student student)
         {
-            _context.Students.Add(student);
-            await _context.SaveChangesAsync();
-            return student;
+            try
+            {
+                _context.Students.Add(student);
+                await _context.SaveChangesAsync();
+                return student;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao adicionar estudante", ex);
+            }
         }
 
         public async Task<Student> UpdateAsync(Student student)
         {
-            _context.Students.Update(student);
-            await _context.SaveChangesAsync();
-            return student;
+            try
+            {
+                _context.Students.Update(student);
+                await _context.SaveChangesAsync();
+                return student;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao atualizar estudante", ex);
+            }
         }
 
         public async Task<bool> DeleteAsync(string academicRegistration)
         {
-            var student = await _context.Students.FindAsync(academicRegistration);
-            if (student == null)
+            try
             {
-                return false;
-            }
+                var student = await _context.Students.FindAsync(academicRegistration);
+                if (student == null)
+                {
+                    return false;
+                }
 
-            _context.Students.Remove(student);
-            await _context.SaveChangesAsync();
-            return true;
+                _context.Students.Remove(student);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao deletar estudante", ex);
+            }
         }
     }
 }
